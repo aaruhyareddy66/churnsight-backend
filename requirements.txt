@@ -1,0 +1,14 @@
+fastapi
+uvicorn[standard]
+python-multipart
+pydantic
+pandas
+numpy
+scikit-learn
+xgboost
+shap
+joblib
+sentence-transformers
+faiss-cpu
+google-generativeai
+python-dotenv

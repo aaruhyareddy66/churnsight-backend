@@ -1,0 +1,55 @@
+{
+  "features": [
+    "gender",
+    "Partner",
+    "Dependents",
+    "PhoneService",
+    "InternetService",
+    "OnlineSecurity",
+    "TechSupport",
+    "StreamingTV",
+    "Contract",
+    "PaymentMethod",
+    "SeniorCitizen",
+    "tenure",
+    "MonthlyCharges",
+    "TotalCharges"
+  ],
+  "categorical": [
+    "gender",
+    "Partner",
+    "Dependents",
+    "PhoneService",
+    "InternetService",
+    "OnlineSecurity",
+    "TechSupport",
+    "StreamingTV",
+    "Contract",
+    "PaymentMethod"
+  ],
+  "numeric": [
+    "SeniorCitizen",
+    "tenure",
+    "MonthlyCharges",
+    "TotalCharges"
+  ],
+  "accuracy": 0.733,
+  "roc_auc": 0.7876,
+  "churn_rate": 0.2562,
+  "feature_importance": {
+    "Contract": 1.2142,
+    "MonthlyCharges": 0.3687,
+    "tenure": 0.3525,
+    "TotalCharges": 0.2544,
+    "InternetService": 0.2241,
+    "PaymentMethod": 0.2221,
+    "TechSupport": 0.1862,
+    "OnlineSecurity": 0.0984,
+    "StreamingTV": 0.0939,
+    "SeniorCitizen": 0.0886,
+    "Partner": 0.0689,
+    "Dependents": 0.0566,
+    "gender": 0.0496,
+    "PhoneService": 0.0233
+  }
+}
