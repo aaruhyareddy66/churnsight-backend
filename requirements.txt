@@ -12,3 +12,4 @@ sentence-transformers
 faiss-cpu
 google-generativeai
 python-dotenv
+groq
