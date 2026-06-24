@@ -15,8 +15,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # ── RAG imports ───────────────────────────────────────────────────────────────
-from sentence_transformers import SentenceTransformer
-import faiss
+import re
 
 app = FastAPI(title="ChurnSight AI", version="1.0")
 
@@ -66,9 +65,14 @@ faiss_idx  = faiss.IndexFlatL2(kb_embeds.shape[1])
 faiss_idx.add(kb_embeds.astype("float32"))
 
 def retrieve(query: str, k: int = 3) -> list[str]:
-    q_vec = embedder.encode([query], convert_to_numpy=True).astype("float32")
-    _, idxs = faiss_idx.search(q_vec, k)
-    return [KNOWLEDGE_BASE[i] for i in idxs[0]]
+    query_words = set(re.findall(r'\w+', query.lower()))
+    scores = []
+    for chunk in KNOWLEDGE_BASE:
+        chunk_words = set(re.findall(r'\w+', chunk.lower()))
+        score = len(query_words & chunk_words)
+        scores.append(score)
+    top_k = sorted(range(len(scores)), key=lambda i: -scores[i])[:k]
+    return [KNOWLEDGE_BASE[i] for i in top_k]
 
 # ── Gemini client ─────────────────────────────────────────────────────────────
 groq_client = Groq(api_key=os.getenv("GROQ_API_KEY", ""))
