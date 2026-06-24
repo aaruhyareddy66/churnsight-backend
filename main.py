@@ -58,11 +58,7 @@ KNOWLEDGE_BASE = [
     "Net Promoter Score (NPS) surveys sent at 3, 6, and 12 months of tenure help identify dissatisfied customers before they churn.",
 ]
 
-# Build FAISS index
-embedder   = SentenceTransformer("all-MiniLM-L6-v2")
-kb_embeds  = embedder.encode(KNOWLEDGE_BASE, convert_to_numpy=True)
-faiss_idx  = faiss.IndexFlatL2(kb_embeds.shape[1])
-faiss_idx.add(kb_embeds.astype("float32"))
+
 
 def retrieve(query: str, k: int = 3) -> list[str]:
     query_words = set(re.findall(r'\w+', query.lower()))
