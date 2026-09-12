@@ -1,5 +1,4 @@
-from fastapi import FastAPI, UploadFile, File, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi import FastAPI, UploadFile, File, HTTPException, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from typing import Optional
@@ -12,13 +11,22 @@ load_dotenv()
 
 app = FastAPI(title="ChurnSight AI", version="2.0")
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-    allow_credentials=False,
-)
+@app.middleware("http")
+async def add_cors_headers(request: Request, call_next):
+    if request.method == "OPTIONS":
+        return JSONResponse(
+            content={},
+            headers={
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+                "Access-Control-Allow-Headers": "*",
+            }
+        )
+    response = await call_next(request)
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "*"
+    return response
 
 BASE = os.path.dirname(__file__)
 model = joblib.load(os.path.join(BASE, "models/xgb_churn_model.pkl"))
@@ -151,10 +159,6 @@ async def predict_bulk(file: UploadFile = File(...)):
     summary = df_out["risk_level"].value_counts().to_dict()
     avg_prob = float(df_out["churn_probability"].mean())
     return {"total_customers": len(results), "average_churn_probability": round(avg_prob, 4), "risk_summary": summary, "predictions": results}
-
-@app.options("/chat")
-def chat_options():
-    return JSONResponse(content={}, headers={"Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "POST, OPTIONS", "Access-Control-Allow-Headers": "*"})
 
 @app.post("/chat")
 def chat(payload: ChatIn):
