@@ -175,7 +175,7 @@ def chat(payload: ChatIn):
         f"Retrieved Knowledge:\n{context}{customer_ctx}"
     )
     response = groq_client.chat.completions.create(
-        model="llama-3.1-8b-instant",
+        model="meta-llama/llama-4-scout-17b-16e-instruct",
         messages=[{"role": "system", "content": system_prompt}, {"role": "user", "content": payload.message}],
         max_tokens=600,
     )
